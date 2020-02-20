@@ -1,0 +1,47 @@
+version: "3.1"
+services:
+
+  nginx:
+    build: nginx
+    container_name: nucleus-nginx
+    restart: always
+    working_dir: /srv/www
+    volumes:
+      - ${DEV_ENV_PATH}/phpmyadmin:/srv/www
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+
+  php-fpm:
+    build: php-fpm
+    container_name: nucleus-php-fpm
+    restart: always
+    working_dir: /srv/www
+    volumes:
+      - ${DEV_ENV_PATH}/phpmyadmin:/srv/www
+      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+
+  mariadb:
+    image: mariadb:10.4
+    container_name: nucleus-mariadb
+    restart: always
+    working_dir: /srv/db
+    volumes:
+      - .:/srv/db
+    environment:
+      - MYSQL_ROOT_PASSWORD=starfish
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=starfish
+      - MYSQL_PASSWORD=starfish
+    ports:
+      - "13306:3306"
+
+  memcached:
+    image: memcached
+    container_name: nucleus-memcached
+    restart: always
+
+  redis:
+    image: redis
+    container_name: nucleus-redis
+    restart: always
