@@ -1,3 +1,3 @@
-# Decodelabs Nucleus Dev Environment
+# DecodeLabs Nucleus Dev Environment
 
-Docker based setup for a generic dev environment for Decodelabs projects.
+Docker based setup for a generic dev environment for DecodeLabs projects.
