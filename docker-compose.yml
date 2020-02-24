@@ -19,7 +19,8 @@ services:
       - ${DEV_ENV_PATH}:/srv/env
       - ${DEV_WWW_PATH}:/srv/www
       - ./logs/nginx:/var/log/nginx
-      - ./services/nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./services/nginx/snippets/:/etc/nginx/snippets/:ro
+      - ./services/nginx/hosts/:/etc/nginx/conf.d/:ro
 
 
   # ------------------------------------------------------------
@@ -62,7 +63,7 @@ services:
       - "3306:3306"
     volumes:
       - ${DEV_ENV_PATH}/phpmyadmin/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql:ro
-      - ./services/mariadb/dbs/pma-user.sql:/docker-entrypoint-initdb.d/pma-user.sql:ro
+      - ./services/mariadb/data/pma-user.sql:/docker-entrypoint-initdb.d/pma-user.sql:ro
       - nucleus-mariadb:/var/lib/mysql:rw
 
   # ------------------------------------------------------------
@@ -93,7 +94,7 @@ services:
     volumes:
       - nucleus-syncthing:/config
       - ${DEV_WWW_PATH}:/var/syncthing/www
-    restart: unless-stopped
+    restart: always
 
 
   # ------------------------------------------------------------
