@@ -1,47 +1,114 @@
 version: "3.1"
 services:
 
+  # ------------------------------------------------------------
+  # nginx
+  # ------------------------------------------------------------
   nginx:
-    build: nginx
+    build: services/nginx
     container_name: nucleus-nginx
+    hostname: nginx
     restart: always
     working_dir: /srv/www
-    volumes:
-      - ${DEV_ENV_PATH}/phpmyadmin:/srv/www
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
+      - "443:443"
+    depends_on:
+      - php
+    volumes:
+      - ${DEV_ENV_PATH}:/srv/env
+      - ${DEV_WWW_PATH}:/srv/www
+      - ${DEV_ENV_PATH}/hosts:/etc/nginx/conf.d/:ro
 
-  php-fpm:
-    build: php-fpm
-    container_name: nucleus-php-fpm
+
+  # ------------------------------------------------------------
+  # PHP
+  # ------------------------------------------------------------
+  php:
+    build: services/php
+    container_name: nucleus-php
+    hostname: php
     restart: always
     working_dir: /srv/www
+    env_file:
+      ./.env
+    environment:
+      - DB_HOST=mariadb
+    depends_on:
+      - memcached
     volumes:
-      - ${DEV_ENV_PATH}/phpmyadmin:/srv/www
-      - ./php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+      - ${DEV_ENV_PATH}:/srv/env
+      - ${DEV_WWW_PATH}:/srv/www
+      - ./services/php/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
+      - ./services/php/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
 
+
+  # ------------------------------------------------------------
+  # Maria Database
+  # ------------------------------------------------------------
   mariadb:
     image: mariadb:10.4
     container_name: nucleus-mariadb
+    hostname: mariadb
     restart: always
     working_dir: /srv/db
-    volumes:
-      - .:/srv/db
     environment:
-      - MYSQL_ROOT_PASSWORD=starfish
-      - MYSQL_DATABASE=test
-      - MYSQL_USER=starfish
-      - MYSQL_PASSWORD=starfish
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - "13306:3306"
+      - "3306:3306"
+    volumes:
+      - ${DEV_ENV_PATH}/phpmyadmin/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql:ro
+      - ./services/mariadb/dbs/pma-user.sql:/docker-entrypoint-initdb.d/pma-user.sql:ro
+      - nucleus-mariadb:/var/lib/mysql:rw
 
+  # ------------------------------------------------------------
+  # Memcache
+  # ------------------------------------------------------------
   memcached:
     image: memcached
     container_name: nucleus-memcached
     restart: always
 
+
+  # ------------------------------------------------------------
+  # Redis
+  # ------------------------------------------------------------
   redis:
     image: redis
     container_name: nucleus-redis
     restart: always
+
+
+  # ------------------------------------------------------------
+  # Syncthing
+  # ------------------------------------------------------------
+  syncthing:
+    image: syncthing/syncthing
+    container_name: nucleus-syncthing
+    network_mode: host
+    volumes:
+      - nucleus-syncthing:/config
+      - ${DEV_WWW_PATH}:/var/syncthing/www
+    restart: unless-stopped
+
+
+  # ------------------------------------------------------------
+  # Portainer
+  # ------------------------------------------------------------
+  portainer:
+    image: portainer/portainer
+    container_name: nucleus-portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - nucleus-portainer:/data
+
+
+# ------------------------------------------------------------
+# Volumes
+# ------------------------------------------------------------
+volumes:
+  nucleus-mariadb:
+  nucleus-syncthing:
+  nucleus-portainer:
