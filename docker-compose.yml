@@ -5,14 +5,14 @@ services:
   # nginx
   # ------------------------------------------------------------
   nginx:
-    build: services/nginx
+    image: nginx
     container_name: nucleus-nginx
     hostname: nginx
     restart: always
     working_dir: /srv/www
     ports:
-      - "80:80"
-      - "443:443"
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
     depends_on:
       - php
     volumes:
@@ -92,7 +92,7 @@ services:
     container_name: nucleus-syncthing
     network_mode: host
     volumes:
-      - nucleus-syncthing:/config
+      - nucleus-syncthing:/var/syncthing/config
       - ${DEV_WWW_PATH}:/var/syncthing/www
     restart: always
 
