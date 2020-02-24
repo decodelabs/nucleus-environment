@@ -32,9 +32,10 @@ services:
     restart: always
     working_dir: /srv/www
     env_file:
-      ./.env
+      - ./.env
     environment:
-      - DB_HOST=mariadb
+      - GIT_NAME
+      - GIT_EMAIL
     depends_on:
       - memcached
     volumes:
