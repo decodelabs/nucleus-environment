@@ -19,7 +19,7 @@ services:
       - ${DEV_ENV_PATH}:/srv/env
       - ${DEV_WWW_PATH}:/srv/www
       - ./logs/nginx:/var/log/nginx
-      - ${DEV_ENV_PATH}/hosts:/etc/nginx/conf.d/:ro
+      - ./services/nginx/conf/:/etc/nginx/conf.d/:ro
 
 
   # ------------------------------------------------------------
