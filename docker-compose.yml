@@ -18,6 +18,7 @@ services:
     volumes:
       - ${DEV_ENV_PATH}:/srv/env
       - ${DEV_WWW_PATH}:/srv/www
+      - ./logs/nginx:/var/log/nginx
       - ${DEV_ENV_PATH}/hosts:/etc/nginx/conf.d/:ro
 
 
@@ -39,6 +40,7 @@ services:
     volumes:
       - ${DEV_ENV_PATH}:/srv/env
       - ${DEV_WWW_PATH}:/srv/www
+      - ./logs/php:/var/log/php
       - ./services/php/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
       - ./services/php/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
 
