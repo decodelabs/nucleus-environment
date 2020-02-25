@@ -9,7 +9,7 @@ services:
     container_name: nucleus-php
     hostname: php
     restart: always
-    working_dir: /srv/www
+    working_dir: /srv/www/sites
     env_file:
       - ./.env
     environment:
