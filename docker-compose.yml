@@ -63,6 +63,7 @@ services:
       - "3306:3306"
     volumes:
       - nucleus-mariadb:/var/lib/mysql/:rw
+      - ./services/mariadb/config/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
       - ./services/mariadb/data/pma-tables.sql:/docker-entrypoint-initdb.d/pma-tables.sql:ro
       - ./services/mariadb/data/pma-user.sql:/docker-entrypoint-initdb.d/pma-user.sql:ro
 
