@@ -40,7 +40,6 @@ RUN mkdir /srv/util/ \
 	&& mkdir /srv/util/phpmyadmin/tmp
 
 COPY ./config/phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php
-
 RUN chown -R nucleus:nucleus /srv/util/phpmyadmin
 
 
@@ -59,8 +58,6 @@ COPY ./certificates/nucleus.localtest.ext /srv/util/certificates/nucleus.localte
 RUN cd /srv/util/certificates/ \
 	&& openssl x509 -req -in nucleus.localtest.csr -CA nucleus.ca.pem -CAkey nucleus.ca.key -CAcreateserial -passin pass:nucleus -out nucleus.localtest.crt -days 1825 -sha256 -extfile nucleus.localtest.ext \
 	&& cat nucleus.localtest.crt nucleus.ca.pem > nucleus.bundle.crt
-
-
 
 
 # Volumes
