@@ -31,6 +31,42 @@ RUN apt-get update \
 	&& chown nucleus:nucleus /var/run/mysqld/
 
 
+# PHPMyAdmin
+RUN mkdir /srv/util/ \
+	&& cd /srv/util/ \
+	&& composer create-project phpmyadmin/phpmyadmin --no-dev \
+	&& cd /srv/util/phpmyadmin \
+	&& composer update --no-dev \
+	&& mkdir /srv/util/phpmyadmin/tmp
+
+COPY ./phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php
+
+RUN chown -R nucleus:nucleus /srv/util/phpmyadmin
+
+
+# Certificates
+RUN cd /srv/util/ \
+	&& mkdir /srv/util/certificates/ \
+	&& cd /srv/util/certificates/ \
+	&& openssl genrsa -des3 -passout pass:nucleus -out nucleus.ca.key 2048 \
+	&& openssl req -x509 -new -nodes -passin pass:nucleus -key nucleus.ca.key -sha256 -days 1825 -out nucleus.ca.pem -subj "/C=GB/ST=London/L=/O=/OU=/CN=nucleus" \
+	&& openssl dhparam -out dhparams.pem 2048 \
+	&& openssl genrsa -passout pass:nucleus -out nucleus.localtest.key 2048 \
+	&& openssl req -new -passin pass:nucleus -key nucleus.localtest.key -out nucleus.localtest.csr -subj "/C=GB/ST=London/L=/O=/OU=/CN=nucleus"
+
+COPY ./certificates/nucleus.localtest.ext /srv/util/certificates/nucleus.localtest.ext
+
+RUN cd /srv/util/certificates/ \
+	&& openssl x509 -req -in nucleus.localtest.csr -CA nucleus.ca.pem -CAkey nucleus.ca.key -CAcreateserial -passin pass:nucleus -out nucleus.localtest.crt -days 1825 -sha256 -extfile nucleus.localtest.ext \
+	&& cat nucleus.localtest.crt nucleus.ca.pem > nucleus.bundle.crt
+
+
+
+
+# Volumes
+VOLUME /srv/util/
+
+
 # Setup entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh

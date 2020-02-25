@@ -2,28 +2,6 @@ version: "3.1"
 services:
 
   # ------------------------------------------------------------
-  # nginx
-  # ------------------------------------------------------------
-  nginx:
-    image: nginx
-    container_name: nucleus-nginx
-    hostname: nginx
-    restart: always
-    working_dir: /srv/www
-    ports:
-      - "${HTTP_PORT}:80"
-      - "${HTTPS_PORT}:443"
-    depends_on:
-      - php
-    volumes:
-      - ${DEV_ENV_PATH}:/srv/env
-      - ${DEV_WWW_PATH}:/srv/www
-      - ./logs/nginx:/var/log/nginx
-      - ./services/nginx/snippets/:/etc/nginx/snippets/:ro
-      - ./services/nginx/hosts/:/etc/nginx/conf.d/:ro
-
-
-  # ------------------------------------------------------------
   # PHP
   # ------------------------------------------------------------
   php:
@@ -40,11 +18,33 @@ services:
     depends_on:
       - memcached
     volumes:
-      - ${DEV_ENV_PATH}:/srv/env
-      - ${DEV_WWW_PATH}:/srv/www
-      - ./logs/php:/var/log/php
+      - ${DEV_ENV_PATH}:/srv/env/
+      - ${DEV_WWW_PATH}:/srv/www/
+      - nucleus-util:/srv/util/:rw
       - ./services/php/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
       - ./services/php/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
+
+
+  # ------------------------------------------------------------
+  # nginx
+  # ------------------------------------------------------------
+  nginx:
+    image: nginx
+    container_name: nucleus-nginx
+    hostname: nginx
+    restart: always
+    working_dir: /srv/www
+    ports:
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
+    depends_on:
+      - php
+    volumes:
+      - ${DEV_ENV_PATH}:/srv/env/:ro
+      - ${DEV_WWW_PATH}:/srv/www/
+      - nucleus-util:/srv/util/:rw
+      - ./services/nginx/snippets/:/etc/nginx/snippets/:ro
+      - ./services/nginx/hosts/:/etc/nginx/conf.d/:ro
 
 
   # ------------------------------------------------------------
@@ -62,9 +62,9 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ${DEV_ENV_PATH}/phpmyadmin/sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql:ro
+      - nucleus-mariadb:/var/lib/mysql/:rw
+      - ./services/mariadb/data/pma-tables.sql:/docker-entrypoint-initdb.d/pma-tables.sql:ro
       - ./services/mariadb/data/pma-user.sql:/docker-entrypoint-initdb.d/pma-user.sql:ro
-      - nucleus-mariadb:/var/lib/mysql:rw
 
   # ------------------------------------------------------------
   # Memcache
@@ -92,8 +92,8 @@ services:
     container_name: nucleus-syncthing
     network_mode: host
     volumes:
-      - nucleus-syncthing:/var/syncthing/config
-      - ${DEV_WWW_PATH}:/var/syncthing/www
+      - nucleus-syncthing:/var/syncthing
+      - ${DEV_WWW_PATH}:/var/syncthing/www/
     restart: always
 
 
@@ -106,13 +106,14 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - nucleus-portainer:/data
+      - nucleus-portainer:/data/
 
 
 # ------------------------------------------------------------
 # Volumes
 # ------------------------------------------------------------
 volumes:
+  nucleus-util:
   nucleus-mariadb:
   nucleus-syncthing:
   nucleus-portainer:

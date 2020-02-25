@@ -1,5 +1,6 @@
 .DS_Store
 .env
 docker-compose.override.yml
-/logs
+/certificates
 /hosts
+/logs
