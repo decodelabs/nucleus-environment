@@ -39,7 +39,7 @@ RUN mkdir /srv/util/ \
 	&& composer update --no-dev \
 	&& mkdir /srv/util/phpmyadmin/tmp
 
-COPY ./phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php
+COPY ./config/phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php
 
 RUN chown -R nucleus:nucleus /srv/util/phpmyadmin
 

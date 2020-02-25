@@ -21,8 +21,8 @@ services:
       - ${DEV_ENV_PATH}:/srv/env/
       - ${DEV_WWW_PATH}:/srv/www/
       - nucleus-util:/srv/util/:rw
-      - ./services/php/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
-      - ./services/php/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
+      - ./services/php/config/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
+      - ./services/php/config/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
 
 
   # ------------------------------------------------------------
