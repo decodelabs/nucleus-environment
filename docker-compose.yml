@@ -9,7 +9,7 @@ services:
     container_name: nucleus-php
     hostname: php
     restart: always
-    working_dir: /srv/www/sites
+    working_dir: /srv/www/sites/
     env_file:
       - ./.env
     environment:
@@ -33,7 +33,7 @@ services:
     container_name: nucleus-nginx
     hostname: nginx
     restart: always
-    working_dir: /srv/www
+    working_dir: /srv/www/sites/
     ports:
       - "${HTTP_PORT}:80"
       - "${HTTPS_PORT}:443"
