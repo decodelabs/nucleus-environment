@@ -23,42 +23,36 @@ RUN apt-get update \
 		php7.3-bcmath php7.3-gd php7.3-gmp php-imagick php7.3-intl php7.3-ldap php-memcached php7.3-mysql php-redis php-xdebug \
 		autoconf automake bash-completion binutils build-essential coreutils dnsutils iputils-ping net-tools netcat socat sudo  \
 		bzip2 git git-flow nano rsync supervisor unzip zip \
-		imagemagick nodejs openssh-client redis-tools sassc \
-    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* \
-	&& curl -s https://getcomposer.org/installer | php \
-	&& mv composer.phar /usr/local/bin/composer \
-	&& mkdir -p /var/run/mysqld/ \
-	&& chown nucleus:nucleus /var/run/mysqld/
+		imagemagick nodejs openssh-client openssh-server redis-tools sassc \
+    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+# Install composer
+RUN curl -s https://getcomposer.org/installer | php \
+	&& mv composer.phar /usr/local/bin/composer
+
+# Setup dirs
+RUN mkdir -p /var/run/mysqld/ \
+	&& chown nucleus:nucleus /var/run/mysqld/ \
+	&& mkdir -p /srv/util/certificates/ \
+	&& chown nucleus:nucleus /srv/util/certificates/ \
+	&& mkdir -p /run/sshd \
+	&& mkdir -p /home/nucleus/.ssh/ \
+	&& chown nucleus:nucleus /home/nucleus/.ssh/
 
 
 # PHPMyAdmin
-RUN mkdir /srv/util/ \
-	&& cd /srv/util/ \
+COPY ./config/phpmyadmin.config.inc.php /srv/util/phpmyadmin.config.inc.php
+RUN cd /srv/util/ \
 	&& composer create-project phpmyadmin/phpmyadmin --no-dev \
 	&& cd /srv/util/phpmyadmin \
 	&& composer update --no-dev \
-	&& mkdir /srv/util/phpmyadmin/tmp
+	&& mkdir /srv/util/phpmyadmin/tmp \
+	&& mv /srv/util/phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php \
+	&& chown -R nucleus:nucleus /srv/util/phpmyadmin
 
-COPY ./config/phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php
-RUN chown -R nucleus:nucleus /srv/util/phpmyadmin
 
-
-# Certificates
-RUN cd /srv/util/ \
-	&& mkdir /srv/util/certificates/ \
-	&& cd /srv/util/certificates/ \
-	&& openssl genrsa -des3 -passout pass:nucleus -out nucleus.ca.key 2048 \
-	&& openssl req -x509 -new -nodes -passin pass:nucleus -key nucleus.ca.key -sha256 -days 1825 -out nucleus.ca.pem -subj "/C=GB/ST=London/L=/O=/OU=/CN=nucleus" \
-	&& openssl dhparam -out dhparams.pem 2048 \
-	&& openssl genrsa -passout pass:nucleus -out nucleus.localtest.key 2048 \
-	&& openssl req -new -passin pass:nucleus -key nucleus.localtest.key -out nucleus.localtest.csr -subj "/C=GB/ST=London/L=/O=/OU=/CN=nucleus"
-
+# Certificates
 COPY ./certificates/nucleus.localtest.ext /srv/util/certificates/nucleus.localtest.ext
-
-RUN cd /srv/util/certificates/ \
-	&& openssl x509 -req -in nucleus.localtest.csr -CA nucleus.ca.pem -CAkey nucleus.ca.key -CAcreateserial -passin pass:nucleus -out nucleus.localtest.crt -days 1825 -sha256 -extfile nucleus.localtest.ext \
-	&& cat nucleus.localtest.crt nucleus.ca.pem > nucleus.bundle.crt
-
 
 # Volumes
 VOLUME /srv/util/
