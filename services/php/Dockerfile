@@ -37,7 +37,9 @@ RUN mkdir -p /var/run/mysqld/ \
 	&& chown nucleus:nucleus /srv/util/certificates/ \
 	&& mkdir -p /run/sshd \
 	&& mkdir -p /home/nucleus/.ssh/ \
-	&& chown nucleus:nucleus /home/nucleus/.ssh/
+	&& chown nucleus:nucleus /home/nucleus/.ssh/ \
+	&& mkdir -p /home/nucleus/.vscode-server/ \
+	&& chown nucleus:nucleus /home/nucleus/.vscode-server/
 
 
 # PHPMyAdmin
@@ -55,10 +57,11 @@ RUN cd /srv/util/ \
 COPY ./certificates/nucleus.localtest.ext /srv/util/certificates/nucleus.localtest.ext
 
 # Settings
-RUN echo "fs.inotify.max_user_watches=204800" | sudo tee -a /etc/sysctl.conf
+RUN echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
 
 # Volumes
 VOLUME /srv/util/
+VOLUME /home/nucleus/.ssh/
 
 
 # Setup entrypoint

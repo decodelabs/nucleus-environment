@@ -28,6 +28,25 @@ if [[ ! -f /srv/env/nucleus/certificates/nucleus.bundle.crt ]]; then
 	cat nucleus.localtest.crt nucleus.ca.pem > nucleus.bundle.crt
 fi
 
+
+if [[ ! -f /home/nucleus/.ssh/known_hosts ]]; then
+	ssh-keyscan -H github.com >> /home/nucleus/.ssh/known_hosts
+	ssh-keyscan -H bitbucket.org >> /home/nucleus/.ssh/known_hosts
+	ssh-keyscan -H codebasehq.com >> /home/nucleus/.ssh/known_hosts
+	ssh-keyscan -H gitlab.com >> /home/nucleus/.ssh/known_hosts
+	chown nucleus:nucleus /home/nucleus/.ssh/known_hosts
+fi
+
+if [[ ! -f /home/nucleus/.ssh/id_rsa && -f /srv/env/nucleus/certificates/identity.key ]]; then
+	cp /srv/env/nucleus/certificates/identity.key /home/nucleus/.ssh/id_rsa
+	chown nucleus:nucleus /home/nucleus/.ssh/id_rsa
+	chmod 0600 /home/nucleus/.ssh/id_rsa
+fi
+
+if [[ -d /home/nucleus/.vscode-server ]]; then
+	chown nucleus:nucleus /home/nucleus/.vscode-server/
+fi
+
 /usr/sbin/sshd
 
 # Run FPM

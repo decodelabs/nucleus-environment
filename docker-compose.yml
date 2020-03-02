@@ -23,10 +23,12 @@ services:
     volumes:
       - ${DEV_ENV_PATH}:/srv/env/
       - ${DEV_WWW_PATH}:/srv/www/
+      - /var/run/docker.sock:/var/run/docker.sock
       - nucleus-util:/srv/util/:rw
       - ./services/php/config/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
       - ./services/php/config/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
       - /home/ubuntu/.ssh/authorized_keys:/home/nucleus/.ssh/authorized_keys
+      - ${DEV_ENV_PATH}/editors/vscode-server/:/home/nucleus/.vscode-server/
 
 
   # ------------------------------------------------------------
