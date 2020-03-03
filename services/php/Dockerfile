@@ -54,7 +54,7 @@ RUN cd /srv/util/ \
 
 
 # Certificates
-COPY ./certificates/nucleus.localtest.ext /srv/util/certificates/nucleus.localtest.ext
+COPY ./config/nucleus.localtest.ext /srv/util/certificates/nucleus.localtest.ext
 
 # Settings
 RUN echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf

@@ -12,12 +12,12 @@ su -c "git config --global user.name \"${GIT_NAME}\"" -s /bin/sh nucleus
 su -c "git config --global user.email \"${GIT_EMAIL}\"" -s /bin/sh nucleus
 
 # Certificates
-if [[ ! -d /srv/env/nucleus/certificates/ ]]; then
-    mkdir /srv/env/nucleus/certificates/
+if [[ ! -d /srv/env/nucleus/config/certificates/ ]]; then
+    mkdir -p /srv/env/nucleus/config/certificates/
 fi
 
-if [[ ! -f /srv/env/nucleus/certificates/nucleus.bundle.crt ]]; then
-	cd /srv/env/nucleus/certificates/
+if [[ ! -f /srv/env/nucleus/config/certificates/nucleus.bundle.crt ]]; then
+	cd /srv/env/nucleus/config/certificates/
     cp /srv/util/certificates/nucleus.localtest.ext .
 	openssl genrsa -des3 -passout pass:nucleus -out nucleus.ca.key 2048
 	openssl req -x509 -new -nodes -passin pass:nucleus -key nucleus.ca.key -sha256 -days 1825 -out nucleus.ca.pem -subj "/C=GB/ST=London/L=/O=/OU=/CN=nucleus"
@@ -37,8 +37,8 @@ if [[ ! -f /home/nucleus/.ssh/known_hosts ]]; then
 	chown nucleus:nucleus /home/nucleus/.ssh/known_hosts
 fi
 
-if [[ ! -f /home/nucleus/.ssh/id_rsa && -f /srv/env/nucleus/certificates/identity.key ]]; then
-	cp /srv/env/nucleus/certificates/identity.key /home/nucleus/.ssh/id_rsa
+if [[ ! -f /home/nucleus/.ssh/id_rsa && -f /srv/env/nucleus/config/certificates/identity.key ]]; then
+	cp /srv/env/nucleus/config/certificates/identity.key /home/nucleus/.ssh/id_rsa
 	chown nucleus:nucleus /home/nucleus/.ssh/id_rsa
 	chmod 0600 /home/nucleus/.ssh/id_rsa
 fi
