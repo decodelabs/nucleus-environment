@@ -26,6 +26,11 @@ if [[ ! -d $PWD/data/editors/vscode-server ]]; then
     echo "Created "$PWD"/data/editors/vscode-server"
 fi
 
+if [[ ! -d $PWD/data/editors/vscode-server-host ]]; then
+    mkdir -p $PWD/data/editors/vscode-server-host
+    echo "Created "$PWD"/data/editors/vscode-server-host"
+fi
+
 if [[ ! -d $PWD/data/www ]]; then
     mkdir -p $PWD/data/www
     echo "Created "$PWD"/data/www"

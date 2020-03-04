@@ -1,0 +1,56 @@
+#!/bin/bash
+DIR=$(dirname $(readlink -f "$0"))
+TMPDIR=$(dirname $(dirname $DIR))
+
+
+# Copy nuclues source
+if [[ ! -d $HOME/nucleus ]]; then
+    echo ""
+    echo -n "Copying $TMPDIR to ${HOME}/nucleus..."
+    cp -r $TMPDIR $HOME/nucleus
+    echo " done"
+fi
+
+
+# Update && install
+sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get install -y make mariadb-client-10.1
+
+# Set max watches
+echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
+
+# Update profile
+cat <<-EOF >>~/.profile
+
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
+export CLICOLOR=1
+export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
+
+export NUCLEUS_HOME=$HOME/nucleus
+export NUCLEUS_WWW=$HOME/nucleus/data/www
+
+cd \$NUCLEUS_HOME
+EOF
+source ~/.profile
+
+
+
+# Setup mysql client
+cat <<EOF | sudo tee -a /etc/mysql/conf.d/client.cnf > /dev/null
+[client]
+protocol=tcp
+EOF
+
+
+# Add host key
+cat $NUCLEUS_HOME/config/ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+
+
+# Link host vscode server
+ln -s /home/ubuntu/nucleus/data/editors/vscode-server-host .vscode-server
+
+
+# Install docker
+sudo snap install docker \
+&& sudo groupadd docker \
+&& sudo usermod -aG docker ${USER}

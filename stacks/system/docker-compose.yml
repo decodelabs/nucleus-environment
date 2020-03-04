@@ -7,9 +7,11 @@ services:
         image: syncthing/syncthing
         container_name: syncthing
         network_mode: host
+        ports:
+            - "8384:8384"
         volumes:
             - syncthing:/var/syncthing
-            - ${NUCLEUS_WWW}:/var/syncthing/www/
+            - ../../:/var/syncthing/nucleus/
         restart: always
 
     # ------------------------------------------------------------
