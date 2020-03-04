@@ -1,53 +1,56 @@
 #!/bin/bash
 
+DIR=$(dirname $(readlink -f "$0"))
+NUCDIR=$(dirname $(dirname $DIR))
+
 # Setup directories
-if [[ ! -d $PWD/config/certificates ]]; then
-    mkdir -p $PWD/config/certificates
-    echo "Created "$PWD"/config/certificates"
+if [[ ! -d $NUCDIR/config/certificates ]]; then
+    mkdir -p $NUCDIR/config/certificates
+    echo "Created "$NUCDIR"/config/certificates"
 fi
 
-if [[ ! -d $PWD/config/hosts ]]; then
-    mkdir -p $PWD/config/hosts
-    echo "Created "$PWD"/config/hosts"
+if [[ ! -d $NUCDIR/config/hosts ]]; then
+    mkdir -p $NUCDIR/config/hosts
+    echo "Created "$NUCDIR"/config/hosts"
 fi
 
-if [[ ! -d $PWD/data/databases ]]; then
-    mkdir -p $PWD/data/databases
-    echo "Created "$PWD"/data/databases"
+if [[ ! -d $NUCDIR/data/databases ]]; then
+    mkdir -p $NUCDIR/data/databases
+    echo "Created "$NUCDIR"/data/databases"
 fi
 
-if [[ ! -d $PWD/data/editors/code-server ]]; then
-    mkdir -p $PWD/data/editors/code-server
-    echo "Created "$PWD"/data/editors/code-server"
+if [[ ! -d $NUCDIR/data/editors/code-server ]]; then
+    mkdir -p $NUCDIR/data/editors/code-server
+    echo "Created "$NUCDIR"/data/editors/code-server"
 fi
 
-if [[ ! -d $PWD/data/editors/vscode-server ]]; then
-    mkdir -p $PWD/data/editors/vscode-server
-    echo "Created "$PWD"/data/editors/vscode-server"
+if [[ ! -d $NUCDIR/data/editors/vscode-server ]]; then
+    mkdir -p $NUCDIR/data/editors/vscode-server
+    echo "Created "$NUCDIR"/data/editors/vscode-server"
 fi
 
-if [[ ! -d $PWD/data/editors/vscode-server-host ]]; then
-    mkdir -p $PWD/data/editors/vscode-server-host
-    echo "Created "$PWD"/data/editors/vscode-server-host"
+if [[ ! -d $NUCDIR/data/editors/vscode-server-host ]]; then
+    mkdir -p $NUCDIR/data/editors/vscode-server-host
+    echo "Created "$NUCDIR"/data/editors/vscode-server-host"
 fi
 
-if [[ ! -d $PWD/data/www ]]; then
-    mkdir -p $PWD/data/www
-    echo "Created "$PWD"/data/www"
+if [[ ! -d $NUCDIR/data/www ]]; then
+    mkdir -p $NUCDIR/data/www
+    echo "Created "$NUCDIR"/data/www"
 fi
 
 
 # Create .env file
-if [[ ! -f $PWD/.env ]]; then
-    cp $PWD/.env-example $PWD/.env
+if [[ ! -f $NUCDIR/.env ]]; then
+    cp $NUCDIR/.env-example $NUCDIR/.env
     echo "Created .env file - please set your own values here"
-    nano $PWD/.env
+    nano $NUCDIR/.env
 fi
 
 
 # Ensure git credentials
 if [[ -z $(git config --global user.name) ]]; then
-    source $PWD/.env
+    source $NUCDIR/.env
     echo "Setting git credentials: $GIT_NAME / $GIT_EMAIL"
     git config --global user.name $GIT_NAME
     git config --global user.email $GIT_EMAIL
