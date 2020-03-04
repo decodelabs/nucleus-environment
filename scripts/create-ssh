@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [[ ! -d $PWD/config/ssh/ ]]; then
+    mkdir -p $PWD/config/ssh/
+fi
+
+
+# Copy or generate id_rsa
+if [[ ! -f $PWD/config/ssh/id_rsa ]]; then
+    if [[ -f $HOME/.ssh/id_rsa && -f $HOME/.ssh/id_rsa.pub ]]; then
+        cp $HOME/.ssh/id_rsa $PWD/config/ssh/id_rsa
+        cp $HOME/.ssh/id_rsa.pub $PWD/config/ssh/id_rsa.pub
+    else
+        source $PWD/.env
+        ssh-keygen -t rsa -b 4096 -C "$GIT_EMAIL" -q -f $PWD/config/ssh/id_rsa -N "$PASSWORD"
+        mkdir -p $HOME/.ssh
+    fi
+
+    chmod 0600 $PWD/config/ssh/id_rsa
+fi
+
+if [[ ! -f $HOME/.ssh/id_rsa ]]; then
+    cp $PWD/config/ssh/id_rsa $HOME/.ssh/id_rsa
+    cp $PWD/config/ssh/id_rsa.pub $HOME/.ssh/id_rsa.pub
+fi
+
+
+# List known hosts
+if [[ ! -f $PWD/config/ssh/known_hosts ]]; then
+	ssh-keyscan -H github.com >> $PWD/config/ssh/known_hosts
+	ssh-keyscan -H bitbucket.org >> $PWD/config/ssh/known_hosts
+	ssh-keyscan -H codebasehq.com >> $PWD/config/ssh/known_hosts
+	ssh-keyscan -H gitlab.com >> $PWD/config/ssh/known_hosts
+fi
+
+
+# Authorized keys
+if [[ ! -f $PWD/config/ssh/authorized_keys ]]; then
+    if [[ $USER == "ubuntu" && -f $HOME/.ssh/authorized_keys ]]; then
+        cat $HOME/.ssh/authorized_keys >> $PWD/config/ssh/authorized_keys
+    fi
+
+
+    cat $PWD/config/ssh/id_rsa.pub >> $PWD/config/ssh/authorized_keys
+fi

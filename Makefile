@@ -1,7 +1,8 @@
-
+default: sys.start www.build
 
 help:
 	@echo 'All:'
+	@echo '  install			prep verts and build'
 	@echo '  shell				ensure startup and load shell'
 	@echo '  all.start			ensure everything is up'
 	@echo '  all.stop			ensure everything is down'
@@ -25,8 +26,11 @@ help:
 	@echo '  code.restart		restart code stack'
 
 
+install: _install www._build
+
 shell: www.start
 	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
+
 
 all.start: sys.start www.start code.start
 
@@ -37,6 +41,9 @@ all.build: www.build
 _setup:
 	@bash scripts/setup
 
+_install: _setup
+	@bash scripts/create-certificates \
+	&& bash scripts/create-ssh
 
 www.start:
 	@bash scripts/ensure-up www
