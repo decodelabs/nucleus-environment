@@ -27,8 +27,8 @@ help:
 
 
 install: _setup
-	@bash scripts/create-certificates \
-	&& bash scripts/create-ssh
+	@bash scripts/stack.init/create-certificates \
+	&& bash scripts/stack.init/create-ssh
 
 shell: www.start
 	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
@@ -41,14 +41,14 @@ all.stop: code.stop www.stop sys.stop
 all.build: www.build
 
 _setup:
-	@bash scripts/setup
+	@bash scripts/stack.init/setup-directories
 
 
 www.start:
-	@bash scripts/ensure-up www
+	@bash scripts/stack.control/ensure-up www
 
 www.stop:
-	@bash scripts/ensure-down www
+	@bash scripts/stack.control/ensure-down www
 
 www.restart: www.stop www.start
 
@@ -68,19 +68,19 @@ www._rebuild:
 
 
 sys.start: _setup
-	@bash scripts/ensure-up system
+	@bash scripts/stack.control/ensure-up system
 
 sys.stop:
-	@bash scripts/ensure-down system
+	@bash scripts/stack.control/ensure-down system
 
 sys.restart: sys.stop sys.start
 
 
 
 code.start: _setup
-	@bash scripts/ensure-up code
+	@bash scripts/stack.control/ensure-up code
 
 code.stop:
-	@bash scripts/ensure-down code
+	@bash scripts/stack.control/ensure-down code
 
 code.restart: code.stop code.start
