@@ -16,12 +16,12 @@ if [[ ! -d $PWD/data/databases ]]; then
     echo "Created "$PWD"/data/databases"
 fi
 
-if [[ ! -d $PWD/data/editors ]]; then
+if [[ ! -d $PWD/data/editors/code-server ]]; then
     mkdir -p $PWD/data/editors/code-server
     echo "Created "$PWD"/data/editors/code-server"
 fi
 
-if [[ ! -d $PWD/data/editors ]]; then
+if [[ ! -d $PWD/data/editors/vscode-server ]]; then
     mkdir -p $PWD/data/editors/vscode-server
     echo "Created "$PWD"/data/editors/vscode-server"
 fi
