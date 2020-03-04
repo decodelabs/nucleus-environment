@@ -44,3 +44,11 @@ if [[ ! -f $PWD/.env ]]; then
     nano $PWD/.env
 fi
 
+
+# Ensure git credentials
+if [[ -z $(git config --global user.name) ]]; then
+    source $PWD/.env
+    echo "Setting git credentials: $GIT_NAME / $GIT_EMAIL"
+    git config --global user.name $GIT_NAME
+    git config --global user.email $GIT_EMAIL
+fi
