@@ -1,0 +1,28 @@
+version: "3.1"
+services:
+    # ------------------------------------------------------------
+    # Code server
+    # ------------------------------------------------------------
+    code-server:
+        build: services/code-server
+        container_name: code-server
+        restart: always
+        environment:
+            PASSWORD: ${PASSWORD}
+        ports:
+            - "8080:8080"
+        volumes:
+            - ../../data/editors/code-server/:/home/coder/.local/share/code-server
+            - ${NUCLEUS_WWW}:/home/coder/project
+    # ------------------------------------------------------------
+    # Theia
+    # ------------------------------------------------------------
+    #theia:
+    #  image: theiaide/theia:next
+    #  container_name: theia
+    #  restart: always
+    #  ports:
+    #    - "3000:3000"
+    #  volumes:
+    #    - ../../data/editors/theia/settings/:/home/theia/.theia
+    #    - ${NUCLEUS_WWW}:/home/project

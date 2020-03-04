@@ -31,14 +31,14 @@ RUN curl -s https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer
 
 # Setup dirs
-RUN mkdir -p /var/run/mysqld/ \
-	&& chown nucleus:nucleus /var/run/mysqld/ \
+RUN mkdir -p /run/sshd \
+	&& mkdir -p /var/run/mysqld/ \
 	&& mkdir -p /srv/util/certificates/ \
-	&& chown nucleus:nucleus /srv/util/certificates/ \
-	&& mkdir -p /run/sshd \
 	&& mkdir -p /home/nucleus/.ssh/ \
-	&& chown nucleus:nucleus /home/nucleus/.ssh/ \
 	&& mkdir -p /home/nucleus/.vscode-server/ \
+	&& chown nucleus:nucleus /var/run/mysqld/ \
+	&& chown nucleus:nucleus /srv/util/certificates/ \
+	&& chown nucleus:nucleus /home/nucleus/.ssh/ \
 	&& chown nucleus:nucleus /home/nucleus/.vscode-server/
 
 

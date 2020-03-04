@@ -1,0 +1,23 @@
+#!/bin/bash
+
+STACK=${1:=www}
+
+case $STACK in
+    www)
+        SERVICE=php
+        ;;
+
+    system)
+        SERVICE=syncthing
+        ;;
+
+    code)
+        SERVICE=code-server
+        ;;
+esac
+
+if [ ! -z `docker-compose -f $PWD/stacks/$STACK/docker-compose.yml ps -q $SERVICE` ] && [ ! -z `docker ps -q --no-trunc | grep $(docker-compose -f $PWD/stacks/$STACK/docker-compose.yml ps -q $SERVICE)` ]; then
+    echo -n "Stopping $STACK..."
+    docker-compose -f $PWD/stacks/$STACK/docker-compose.yml down 2>/dev/null
+    echo " done"
+fi

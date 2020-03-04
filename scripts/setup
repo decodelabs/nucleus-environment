@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Setup directories
+if [[ ! -d $PWD/config/certificates ]]; then
+    mkdir -p $PWD/config/certificates
+    echo "Created "$PWD"/config/certificates"
+fi
+
+if [[ ! -d $PWD/config/hosts ]]; then
+    mkdir -p $PWD/config/hosts
+    echo "Created "$PWD"/config/hosts"
+fi
+
+if [[ ! -d $PWD/data/databases ]]; then
+    mkdir -p $PWD/data/databases
+    echo "Created "$PWD"/data/databases"
+fi
+
+if [[ ! -d $PWD/data/editors ]]; then
+    mkdir -p $PWD/data/editors/code-server
+    echo "Created "$PWD"/data/editors/code-server"
+fi
+
+if [[ ! -d $PWD/data/editors ]]; then
+    mkdir -p $PWD/data/editors/vscode-server
+    echo "Created "$PWD"/data/editors/vscode-server"
+fi
+
+if [[ ! -d $PWD/data/www ]]; then
+    mkdir -p $PWD/data/www
+    echo "Created "$PWD"/data/www"
+fi
+
+
+# Create .env file
+if [[ ! -f $PWD/.env ]]; then
+    cp $PWD/.env-example $PWD/.env
+    echo "Created .env file - please set your own values here"
+    nano $PWD/.env
+fi
+

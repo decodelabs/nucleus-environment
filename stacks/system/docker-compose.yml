@@ -1,0 +1,33 @@
+version: "3.1"
+services:
+    # ------------------------------------------------------------
+    # Syncthing
+    # ------------------------------------------------------------
+    syncthing:
+        image: syncthing/syncthing
+        container_name: syncthing
+        network_mode: host
+        volumes:
+            - syncthing:/var/syncthing
+            - ${NUCLEUS_WWW}:/var/syncthing/www/
+        restart: always
+
+    # ------------------------------------------------------------
+    # Portainer
+    # ------------------------------------------------------------
+    portainer:
+        image: portainer/portainer
+        container_name: portainer
+        restart: always
+        ports:
+            - "9000:9000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - portainer:/data/
+
+# ------------------------------------------------------------
+# Volumes
+# ------------------------------------------------------------
+volumes:
+    syncthing:
+    portainer:

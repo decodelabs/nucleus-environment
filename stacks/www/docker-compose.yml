@@ -5,14 +5,14 @@ services:
     # ------------------------------------------------------------
     php:
         build: services/php
-        container_name: nucleus-php
+        container_name: php
         hostname: php
         restart: always
         working_dir: /srv/www/sites/
         ports:
             - "2222:22"
         env_file:
-            - ./.env
+            - ../../.env
         environment:
             - GIT_NAME
             - GIT_EMAIL
@@ -20,21 +20,20 @@ services:
         depends_on:
             - memcached
         volumes:
-            - ${DEV_ENV_PATH}:/srv/env/
-            - ${DEV_WWW_PATH}:/srv/www/
-            - /var/run/docker.sock:/var/run/docker.sock
-            - nucleus-util:/srv/util/:rw
+            - util:/srv/util/:rw
+            - ../../:/srv/nucleus/:rw
             - ./services/php/config/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
             - ./services/php/config/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
             - /home/ubuntu/.ssh/authorized_keys:/home/nucleus/.ssh/authorized_keys
-            - ${DEV_ENV_PATH}/editors/vscode-server/:/home/nucleus/.vscode-server/
+            - ../../data/editors/vscode-server/:/home/nucleus/.vscode-server/
+            - ${NUCLEUS_WWW}:/srv/www/
 
     # ------------------------------------------------------------
     # nginx
     # ------------------------------------------------------------
     nginx:
         image: nginx
-        container_name: nucleus-nginx
+        container_name: nginx
         hostname: nginx
         restart: always
         working_dir: /srv/www/sites/
@@ -44,18 +43,18 @@ services:
         depends_on:
             - php
         volumes:
-            - ${DEV_ENV_PATH}:/srv/env/:ro
-            - ${DEV_WWW_PATH}:/srv/www/
-            - nucleus-util:/srv/util/:rw
+            - util:/srv/util/:rw
+            - ../../:/srv/nucleus/:ro
             - ./services/nginx/snippets/:/etc/nginx/snippets/:ro
             - ./services/nginx/hosts/:/etc/nginx/conf.d/:ro
+            - ${NUCLEUS_WWW}:/srv/www/
 
     # ------------------------------------------------------------
     # Maria Database
     # ------------------------------------------------------------
     mariadb:
         image: mariadb:10.4
-        container_name: nucleus-mariadb
+        container_name: mariadb
         hostname: mariadb
         restart: always
         working_dir: /srv/db
@@ -67,7 +66,7 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - nucleus-mariadb:/var/lib/mysql/:rw
+            - mariadb:/var/lib/mysql/:rw
             - ./services/mariadb/config/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
             - ./services/mariadb/data/pma-tables.sql:/docker-entrypoint-initdb.d/pma-tables.sql:ro
             - ./services/mariadb/data/pma-user.sql:/docker-entrypoint-initdb.d/pma-user.sql:ro
@@ -77,7 +76,7 @@ services:
     # ------------------------------------------------------------
     memcached:
         image: memcached
-        container_name: nucleus-memcached
+        container_name: memcached
         restart: always
 
     # ------------------------------------------------------------
@@ -85,65 +84,12 @@ services:
     # ------------------------------------------------------------
     redis:
         image: redis
-        container_name: nucleus-redis
+        container_name: redis
         restart: always
-
-    # ------------------------------------------------------------
-    # Syncthing
-    # ------------------------------------------------------------
-    syncthing:
-        image: syncthing/syncthing
-        container_name: nucleus-syncthing
-        network_mode: host
-        volumes:
-            - nucleus-syncthing:/var/syncthing
-            - ${DEV_WWW_PATH}:/var/syncthing/www/
-        restart: always
-
-    # ------------------------------------------------------------
-    # Portainer
-    # ------------------------------------------------------------
-    portainer:
-        image: portainer/portainer
-        container_name: nucleus-portainer
-        restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - nucleus-portainer:/data/
-
-    # ------------------------------------------------------------
-    # Code server
-    # ------------------------------------------------------------
-    code-server:
-        build: services/code-server
-        container_name: nucleus-code-server
-        restart: always
-        environment:
-            PASSWORD: ${PASSWORD}
-        ports:
-            - "8080:8080"
-        volumes:
-            - ${DEV_WWW_PATH}:/home/coder/project
-            - ${DEV_ENV_PATH}/editors/code-server/:/home/coder/.local/share/code-server
-
-    # ------------------------------------------------------------
-    # Theia
-    # ------------------------------------------------------------
-    #theia:
-    #  image: theiaide/theia:next
-    #  container_name: nucleus-theia
-    #  restart: always
-    #  ports:
-    #    - "3000:3000"
-    #  volumes:
-    #    - ${DEV_WWW_PATH}:/home/project
-    #    - ${DEV_ENV_PATH}/editors/theia/settings/:/home/theia/.theia
 
 # ------------------------------------------------------------
 # Volumes
 # ------------------------------------------------------------
 volumes:
-    nucleus-util:
-    nucleus-mariadb:
-    nucleus-syncthing:
-    nucleus-portainer:
+    util:
+    mariadb:
