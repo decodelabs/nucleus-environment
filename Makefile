@@ -25,6 +25,8 @@ help:
 	@echo '  code.stop			stop code stack'
 	@echo '  code.restart		restart code stack'
 
+vm.init:
+	@bash scripts/vm/init-ubuntu
 
 install: _setup
 	@bash scripts/stack.init/create-certificates \
