@@ -42,8 +42,10 @@ protocol=tcp
 EOF
 
 
-# Add host key
+# Setup ssh
 cat $NUCLEUS_HOME/config/ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+cp $NUCLEUS_HOME/config/ssh/id_rsa $HOME/.ssh/
+cp $NUCLEUS_HOME/config/ssh/id_rsa.pub $HOME/.ssh/
 
 
 # Link host vscode server
