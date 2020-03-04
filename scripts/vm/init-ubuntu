@@ -49,7 +49,7 @@ cp $NUCLEUS_HOME/config/ssh/id_rsa.pub $HOME/.ssh/
 
 
 # Link host vscode server
-ln -s /home/ubuntu/nucleus/data/editors/vscode-server-host .vscode-server
+ln -s $HOME/nucleus/data/editors/vscode-server-host .vscode-server
 
 
 # Install docker
