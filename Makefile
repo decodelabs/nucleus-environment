@@ -30,6 +30,7 @@ install: _setup
 	@bash scripts/stack.init/create-certificates \
 	&& bash scripts/stack.init/create-ssh
 
+
 shell: www.start
 	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
 

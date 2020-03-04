@@ -55,3 +55,10 @@ if [[ -z $(git config --global user.name) ]]; then
     git config --global user.name $GIT_NAME
     git config --global user.email $GIT_EMAIL
 fi
+
+
+# Ensure id_rsa
+if [[ ! -f $HOME/.ssh/id_rsa && -f $NUCDIR/config/ssh/id_rsa ]]; then
+    cp $NUCDIR/config/ssh/id_rsa $HOME/.ssh/
+    cp $NUCDIR/config/ssh/id_rsa.pub $HOME/.ssh/
+fi

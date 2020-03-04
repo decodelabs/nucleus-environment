@@ -43,9 +43,11 @@ EOF
 
 
 # Setup ssh
-cat $NUCLEUS_HOME/config/ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
-cp $NUCLEUS_HOME/config/ssh/id_rsa $HOME/.ssh/
-cp $NUCLEUS_HOME/config/ssh/id_rsa.pub $HOME/.ssh/
+if [[ -f $NUCLEUS_HOME/config/ssh/id_rs ]]; then
+    cat $NUCLEUS_HOME/config/ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+    cp $NUCLEUS_HOME/config/ssh/id_rsa $HOME/.ssh/
+    cp $NUCLEUS_HOME/config/ssh/id_rsa.pub $HOME/.ssh/
+fi
 
 
 # Link host vscode server
