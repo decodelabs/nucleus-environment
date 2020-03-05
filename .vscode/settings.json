@@ -1,0 +1,12 @@
+{
+    "files.exclude": {
+        "**/data/www/*": true
+    },
+
+    "search.exclude": {
+        "**/data/www/*": true
+    },
+    "files.watcherExclude": {
+        "**/data/www/*": true
+    }
+}
