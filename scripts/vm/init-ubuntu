@@ -51,7 +51,7 @@ fi
 
 
 # Link host vscode server
-ln -s $HOME/nucleus/data/editors/vscode-server-host .vscode-server
+ln -s $HOME/nucleus/data/editors/vscode-server-host $HOME/.vscode-server
 
 
 # Install docker
