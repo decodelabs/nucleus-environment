@@ -61,6 +61,7 @@ sudo snap install docker \
 
 
 
+# Setup git
 source $NUCLEUS_HOME/.env
 echo "Setting git credentials: $GIT_NAME / $GIT_EMAIL"
 git config --global user.name $GIT_NAME

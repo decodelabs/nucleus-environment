@@ -64,7 +64,7 @@ services:
             - MYSQL_PASSWORD=${PASSWORD}
             - MYSQL_ALLOW_EMPTY_PASSWORD=yes
         ports:
-            - "3306:3306"
+            - "127.0.0.1:3306:3306"
         volumes:
             - mariadb:/var/lib/mysql/:rw
             - ./services/mariadb/config/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
