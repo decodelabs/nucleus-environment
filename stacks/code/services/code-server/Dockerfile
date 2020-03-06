@@ -12,10 +12,16 @@ RUN apt-get update \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
 		php7.3 \
+    bzip2 git git-flow nano rsync supervisor unzip zip \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+
+# Setup entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER coder
 EXPOSE 8080
 
-ENTRYPOINT ["dumb-init", "code-server", "--host", "0.0.0.0"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["dumb-init", "code-server", "--host", "0.0.0.0"]

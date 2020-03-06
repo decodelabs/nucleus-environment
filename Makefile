@@ -4,6 +4,7 @@ help:
 	@echo 'All:'
 	@echo '  install			prep verts and build'
 	@echo '  shell				ensure startup and load shell'
+	@echo '  root-shell			ensure startup and load root shell'
 	@echo '  all.start			ensure everything is up'
 	@echo '  all.stop			ensure everything is down'
 	@echo '  all.build			build everything relevant'
@@ -35,6 +36,12 @@ install: _setup
 
 shell: www.start
 	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
+
+root-shell: www.start
+	@docker-compose -f stacks/www/docker-compose.yml exec php bash -l
+
+code-shell: code.start
+	@docker-compose -f stacks/code/docker-compose.yml exec --user=coder code-server bash -l
 
 
 all.start: sys.start www.start code.start
@@ -87,3 +94,8 @@ code.stop:
 	@bash scripts/stack.control/ensure-down code
 
 code.restart: code.stop code.start
+
+code.build: code.stop _setup code._build code.start
+
+code._build:
+	@docker-compose -f stacks/code/docker-compose.yml build
