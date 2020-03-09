@@ -17,7 +17,7 @@ RUN apt-get update \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
 		php7.3 \
-    bzip2 git git-flow nano rsync supervisor unzip zip \
+    bzip2 git git-flow nano rsync unzip zip \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 
