@@ -1,12 +1,16 @@
-version: "3.1"
+version: "3.5"
 services:
     # ------------------------------------------------------------
     # PHP
     # ------------------------------------------------------------
     php:
-        build: services/php
+        build:
+            context: services/php
+            args:
+                - USERNAME
+                - PASSWORD
         container_name: php
-        hostname: php
+        hostname: nucleus
         restart: always
         working_dir: /srv/www/sites/
         ports:
@@ -16,16 +20,20 @@ services:
         environment:
             - GIT_NAME
             - GIT_EMAIL
+            - USERNAME
             - PASSWORD
         depends_on:
             - memcached
+        networks:
+            nucleus:
+                ipv4_address: 172.16.230.20
         volumes:
             - util:/srv/util/:rw
             - ../../:/srv/nucleus/:rw
             - ./services/php/config/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
             - ./services/php/config/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
-            - ../../config/ssh/:/home/nucleus/.ssh/
-            - ../../data/editors/vscode-server/:/home/nucleus/.vscode-server/
+            - ../../config/ssh/:/home/${USERNAME}/.ssh/
+            - ../../data/editors/vscode-server/:/home/${USERNAME}/.vscode-server/
             - ${NUCLEUS_WWW}:/srv/www/
 
     # ------------------------------------------------------------
@@ -34,7 +42,7 @@ services:
     nginx:
         image: nginx
         container_name: nginx
-        hostname: nginx
+        hostname: nginx.nucleus
         restart: always
         working_dir: /srv/www/sites/
         ports:
@@ -42,6 +50,9 @@ services:
             - "127.0.0.1:${HTTPS_PORT}:443"
         depends_on:
             - php
+        networks:
+            nucleus:
+                ipv4_address: 172.16.230.21
         volumes:
             - util:/srv/util/:rw
             - ../../:/srv/nucleus/:ro
@@ -55,7 +66,7 @@ services:
     mariadb:
         image: mariadb:10.4
         container_name: mariadb
-        hostname: mariadb
+        hostname: mariadb.nucleus
         restart: always
         working_dir: /srv/db
         environment:
@@ -65,6 +76,9 @@ services:
             - MYSQL_ALLOW_EMPTY_PASSWORD=yes
         ports:
             - "127.0.0.1:3306:3306"
+        networks:
+            nucleus:
+                ipv4_address: 172.16.230.22
         volumes:
             - mariadb:/var/lib/mysql/:rw
             - ./services/mariadb/config/overrides.cnf:/etc/mysql/conf.d/overrides.cnf:ro
@@ -77,7 +91,11 @@ services:
     memcached:
         image: memcached
         container_name: memcached
+        hostname: memcached.nucleus
         restart: always
+        networks:
+            nucleus:
+                ipv4_address: 172.16.230.23
 
     # ------------------------------------------------------------
     # Redis
@@ -85,7 +103,25 @@ services:
     redis:
         image: redis
         container_name: redis
+        hostname: redis.nucleus
         restart: always
+        networks:
+            nucleus:
+                ipv4_address: 172.16.230.24
+
+# ------------------------------------------------------------
+# Networks
+# ------------------------------------------------------------
+networks:
+    nucleus:
+        name: nucleus
+        driver: bridge
+        driver_opts:
+            com.docker.network.enable_ipv6: "false"
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.230.0/24
 
 # ------------------------------------------------------------
 # Volumes

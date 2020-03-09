@@ -4,6 +4,11 @@ FROM codercom/code-server:latest
 ARG DEBIAN_FRONTEND=noninteractive
 USER root
 
+# Update user
+RUN set -eux \
+	&& echo "PS1='\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\H\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '" >> /home/coder/.profile \
+	&& chown coder:coder /home/coder/.profile
+
 # Install selected extensions and other stuff
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gnupg \

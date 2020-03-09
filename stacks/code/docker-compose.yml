@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.5"
 services:
     # ------------------------------------------------------------
     # Code server
@@ -6,11 +6,13 @@ services:
     code-server:
         build: services/code-server
         container_name: code-server
+        hostname: code.nucleus
         restart: always
         network_mode: host
         environment:
             - GIT_NAME
             - GIT_EMAIL
+            - USERNAME
             - PASSWORD
         ports:
             - "8080:8080"
@@ -18,16 +20,4 @@ services:
             - ../../config/ssh/:/home/coder/.ssh/
             - ../../data/editors/code-server/:/home/coder/.local/share/code-server
             - ../../:/srv/nucleus
-            - ${NUCLEUS_WWW}:/srv/www
-    # ------------------------------------------------------------
-    # Theia
-    # ------------------------------------------------------------
-    #theia:
-    #  image: theiaide/theia:next
-    #  container_name: theia
-    #  restart: always
-    #  ports:
-    #    - "3000:3000"
-    #  volumes:
-    #    - ../../data/editors/theia/settings/:/home/theia/.theia
-    #    - ${NUCLEUS_WWW}:/home/project
+            - ${NUCLEUS_WWW}:/srv/www/

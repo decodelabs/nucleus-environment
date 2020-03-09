@@ -22,7 +22,7 @@ echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
 # Update profile
 cat <<-EOF >>~/.profile
 
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
+PS1='\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;31m\]\H\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
 export CLICOLOR=1
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 

@@ -52,7 +52,7 @@ www._rebuild:
 	@docker-compose -f stacks/www/docker-compose.yml build --no-cache
 
 www.shell: www.start
-	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
+	@docker-compose -f stacks/www/docker-compose.yml exec --user=1000 php bash -l
 
 www.root.shell: www.start
 	@docker-compose -f stacks/www/docker-compose.yml exec php bash -l

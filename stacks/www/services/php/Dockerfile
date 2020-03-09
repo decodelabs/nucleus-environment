@@ -4,16 +4,22 @@ FROM phpdockerio/php73-fpm:latest
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Set user & group
-ENV MY_USER="nucleus" \
-	MY_GROUP="nucleus" \
+ARG USERNAME=nucleus
+ARG PASSWORD=nucleus
+
+ENV USERNAME="$USERNAME" \
+	PASSWORD="$PASSWORD" \
 	MY_UID="1000" \
 	MY_GID="1000"
 
 RUN set -eux \
-	&& groupadd -g ${MY_GID} -r ${MY_GROUP} \
-	&& useradd -u ${MY_UID} -m -s /bin/bash -g ${MY_GROUP} ${MY_USER} \
-	&& echo "PS1='\[\033[01;36m\]\h\[\033[00m\]@\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '" >> /home/nucleus/.profile \
-	&& chown nucleus:nucleus /home/nucleus/.profile
+	&& groupadd -g ${MY_GID} -r ${USERNAME} \
+	&& useradd -u ${MY_UID} -m -s /bin/bash -g ${USERNAME} ${USERNAME} \
+	&& mkdir /etc/sudoers.d/ \
+	&& echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
+	&& echo "PS1='\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\H\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '" >> /home/${USERNAME}/.profile \
+	&& echo "cd /srv/www" >> /home/${USERNAME}/.profile \
+	&& chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.profile
 
 
 # Install selected extensions and other stuff
@@ -21,25 +27,25 @@ RUN apt-get update \
 	&& curl -sL https://deb.nodesource.com/setup_13.x | bash - \
     && apt-get -y --no-install-recommends install \
 		php7.3-bcmath php7.3-gd php7.3-gmp php-imagick php7.3-intl php7.3-ldap php-memcached php7.3-mysql php-redis php-xdebug \
-		autoconf automake bash-completion binutils build-essential coreutils dnsutils iputils-ping net-tools netcat socat sudo  \
+		autoconf automake bash-completion binutils build-essential coreutils dnsutils iputils-ping locales net-tools netcat socat sudo  \
 		bzip2 git git-flow nano rsync supervisor unzip zip \
 		imagemagick nodejs openssh-client openssh-server redis-tools sassc \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
 
 # Install composer
 RUN curl -s https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer
 
+
 # Setup dirs
 RUN mkdir -p /run/sshd \
 	&& mkdir -p /var/run/mysqld/ \
-	&& mkdir -p /srv/util/certificates/ \
-	&& mkdir -p /home/nucleus/.ssh/ \
-	&& mkdir -p /home/nucleus/.vscode-server/ \
-	&& chown nucleus:nucleus /var/run/mysqld/ \
-	&& chown nucleus:nucleus /srv/util/certificates/ \
-	&& chown nucleus:nucleus /home/nucleus/.ssh/ \
-	&& chown nucleus:nucleus /home/nucleus/.vscode-server/
+	&& mkdir -p /home/${USERNAME}/.ssh/ \
+	&& mkdir -p /home/${USERNAME}/.vscode-server/ \
+	&& chown ${USERNAME}:${USERNAME} /var/run/mysqld/ \
+	&& chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.ssh/ \
+	&& chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.vscode-server/
 
 
 # PHPMyAdmin
@@ -50,17 +56,22 @@ RUN cd /srv/util/ \
 	&& composer update --no-dev \
 	&& mkdir /srv/util/phpmyadmin/tmp \
 	&& mv /srv/util/phpmyadmin.config.inc.php /srv/util/phpmyadmin/config.inc.php \
-	&& chown -R nucleus:nucleus /srv/util/phpmyadmin
+	&& chown -R ${USERNAME}:${USERNAME} /srv/util/phpmyadmin
 
-
-# Certificates
-COPY ./config/nucleus.localtest.ext /srv/util/certificates/nucleus.localtest.ext
 
 # Settings
 RUN echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
 
 # Volumes
 VOLUME /srv/util/
+
+
+# Setup locales
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    update-locale LANG=en_US.UTF-8
+
+ENV LC_ALL en_US.UTF-8
 
 
 # Setup entrypoint
