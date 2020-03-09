@@ -1,6 +1,6 @@
 server {
     listen          443 ssl;
-    server_name     syncthing.localtest.me;
+    server_name     service.localtest.me;
     include         snippets/ssl.conf;
     access_log      off;
     error_log       off;
@@ -12,6 +12,6 @@ server {
 
 server {
     listen 80;
-    server_name syncthing.localtest.me;
+    server_name service.localtest.me;
     return 301 https://$host$request_uri;
 }

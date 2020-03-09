@@ -1,13 +1,10 @@
-default: sys.start www.build
+default: www.build
 
 help:
 	@echo 'All:'
 	@echo '  install			prep verts and build'
 	@echo '  shell				ensure startup and load shell'
 	@echo '  root-shell			ensure startup and load root shell'
-	@echo '  all.start			ensure everything is up'
-	@echo '  all.stop			ensure everything is down'
-	@echo '  all.build			build everything relevant'
 	@echo ''
 	@echo 'Nucleus stack:'
 	@echo '  www.start			ensure all started'
@@ -15,11 +12,6 @@ help:
 	@echo '  www.restart		stop then restart'
 	@echo '  www.build			setup and build the stack'
 	@echo '  www.rebuild		setup and rebuild the stack'
-	@echo ''
-	@echo 'System stack:'
-	@echo '  sys.start			start system stack'
-	@echo '  sys.stop			stop system stack'
-	@echo '  sys.restart		restart system stack'
 	@echo ''
 	@echo 'Code server stack:'
 	@echo '  code.start			start code stack'
@@ -33,25 +25,9 @@ install: _setup
 	@bash scripts/stack.init/create-certificates \
 	&& bash scripts/stack.init/create-ssh
 
-
-shell: www.start
-	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
-
-root-shell: www.start
-	@docker-compose -f stacks/www/docker-compose.yml exec php bash -l
-
-code-shell: code.start
-	@docker-compose -f stacks/code/docker-compose.yml exec --user=coder code-server bash -l
-
-
-all.start: sys.start www.start code.start
-
-all.stop: code.stop www.stop sys.stop
-
-all.build: www.build
-
 _setup:
 	@bash scripts/stack.init/setup-directories
+
 
 
 www.start:
@@ -75,15 +51,11 @@ www._build:
 www._rebuild:
 	@docker-compose -f stacks/www/docker-compose.yml build --no-cache
 
+www.shell: www.start
+	@docker-compose -f stacks/www/docker-compose.yml exec --user=nucleus php bash -l
 
-
-sys.start: _setup
-	@bash scripts/stack.control/ensure-up system
-
-sys.stop:
-	@bash scripts/stack.control/ensure-down system
-
-sys.restart: sys.stop sys.start
+www.root.shell: www.start
+	@docker-compose -f stacks/www/docker-compose.yml exec php bash -l
 
 
 
@@ -99,3 +71,6 @@ code.build: code.stop _setup code._build code.start
 
 code._build:
 	@docker-compose -f stacks/code/docker-compose.yml build
+
+code.shell: code.start
+	@docker-compose -f stacks/code/docker-compose.yml exec --user=coder code-server bash -l
