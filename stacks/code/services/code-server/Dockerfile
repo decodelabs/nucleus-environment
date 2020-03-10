@@ -1,4 +1,4 @@
-FROM codercom/code-server:latest
+FROM codercom/code-server:3.0.1
 
 # Fix debconf warnings upon build
 ARG DEBIAN_FRONTEND=noninteractive
@@ -29,4 +29,4 @@ USER coder
 EXPOSE 8080
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["dumb-init", "code-server", "--host", "0.0.0.0"]
+CMD ["dumb-init", "fixuid", "-q", "/usr/local/bin/code-server", "--host", "0.0.0.0", "."]
