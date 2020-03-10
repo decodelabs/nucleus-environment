@@ -1,0 +1,89 @@
+/* UI */
+.monaco-tl-twistie:before {
+    font-size: 80% !important;
+}
+.monaco-tl-twistie.collapsed:before {
+    opacity: 0.25;
+}
+
+.monaco-icon-label-container {
+    font-size: 95%;
+}
+
+.monaco-icon-label:before {
+    width: 18px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.show-file-icons .file-icon::before,
+.show-file-icons .folder-icon::before,
+.show-file-icons .rootfolder-icon::before {
+    font-size: 90%;
+}
+
+
+/* Folders */
+.\.git-name-folder-icon:before {
+    content: "\e602" !important;
+    font-family: devopicons !important;
+    color: #ac4142 !important;
+}
+.\.vscode-name-folder-icon:before {
+    content: "\f144" !important;
+    font-family: fontawesome !important;
+    color: #ac4142 !important;
+}
+.assets-name-folder-icon:before {
+    content: "\f00e" !important;
+}
+.libraries-name-folder-icon:before {
+    content: "\f00e" !important;
+}
+.src-name-folder-icon:before {
+    content: "\f00e" !important;
+}
+.config-name-folder-icon:before {
+    content: "\f07c" !important;
+}
+.data-name-folder-icon:before {
+    content: "\f097" !important;
+}
+.import-name-folder-icon:before {
+    content: "\f097" !important;
+}
+.deamons-name-folder-icon:before {
+    content: "\f08c" !important;
+}
+.dev-name-folder-icon:before {
+    content: "\f0d3" !important;
+}
+.directory-name-folder-icon:before {
+    content: "\f017" !important;
+}
+.entry-name-folder-icon:before {
+    content: "\f036" !important;
+}
+.helpers-name-folder-icon:before {
+    content: "\f0d4" !important;
+}
+.hooks-name-folder-icon:before {
+    content: "\f07f" !important;
+}
+.models-name-folder-icon:before {
+    content: "\f096" !important;
+}
+.ssl-name-folder-icon:before {
+    content: "\f132" !important;
+    font-family: fontawesome !important;
+}
+.test-name-folder-icon:before {
+    content: "\f135" !important;
+    font-family: fontawesome !important;
+}
+.themes-name-folder-icon:before {
+    content: "\f012" !important;
+}
+.vendor-name-folder-icon:before {
+    content: "\f0c4" !important;
+}

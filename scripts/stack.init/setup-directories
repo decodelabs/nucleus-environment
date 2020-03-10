@@ -29,6 +29,10 @@ if [[ ! -d $NUCDIR/data/editors/vscode-server ]]; then
     echo "Created "$NUCDIR"/data/editors/vscode-server"
 fi
 
+if [[ ! -f $NUCDIR/data/editors/user-ui.css ]]; then
+    touch $NUCDIR/data/editors/user-ui.css
+fi
+
 if [[ ! -d $NUCDIR/data/www ]]; then
     mkdir -p $NUCDIR/data/www
     echo "Created "$NUCDIR"/data/www"

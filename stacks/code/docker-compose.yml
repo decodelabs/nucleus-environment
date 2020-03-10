@@ -19,5 +19,7 @@ services:
         volumes:
             - ../../config/ssh/:/home/coder/.ssh/
             - ../../data/editors/code-server/:/home/coder/.local/share/code-server
+            - ./services/code-server/custom/custom-ui.css:/usr/local/lib/code-server/src/browser/pages/custom-ui.css
+            - ../../data/editors/user-ui.css:/usr/local/lib/code-server/src/browser/pages/user-ui.css
             - ../../:/srv/nucleus
             - ${NUCLEUS_WWW}:/srv/www/

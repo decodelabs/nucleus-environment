@@ -6,8 +6,8 @@ USER root
 
 # Update user
 RUN set -eux \
-	&& echo "PS1='\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\H\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '" >> /home/coder/.profile \
-	&& chown coder:coder /home/coder/.profile
+    && echo "PS1='\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\H\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '" >> /home/coder/.profile \
+    && chown coder:coder /home/coder/.profile
 
 # Install selected extensions and other stuff
 RUN apt-get update \
@@ -16,9 +16,14 @@ RUN apt-get update \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-		php7.3 \
+        php7.3 \
     bzip2 git git-flow nano rsync unzip zip \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+
+# Path for custom ui.css
+RUN echo "<link rel=\"stylesheet\" href=\"{{BASE}}/static/{{COMMIT}}/src/browser/pages/custom-ui.css\" />" >> /usr/local/lib/code-server/src/browser/pages/vscode.html && \
+    echo "<link rel=\"stylesheet\" href=\"{{BASE}}/static/{{COMMIT}}/src/browser/pages/user-ui.css\" />" >> /usr/local/lib/code-server/src/browser/pages/vscode.html
 
 
 # Setup entrypoint
