@@ -2,26 +2,27 @@ default: www.build
 
 help:
 	@echo 'All:'
-	@echo '  install			prep verts and build'
+	@echo '  install			prep environment and build'
+	@echo '  update				pull updates and rebuild'
 	@echo ''
 	@echo 'Nucleus stack:'
-	@echo '  www.start			ensure all started'
-	@echo '  www.stop			ensure all stopped'
-	@echo '  www.restart		stop then restart'
-	@echo '  www.up				load stack in current session for output'
+	@echo '  www.start			start www stack'
+	@echo '  www.stop			stop www stack'
+	@echo '  www.restart		restart www stack'
+	@echo '  www.up				load www stack in current tty'
 	@echo '  www.build			setup and build the stack'
 	@echo '  www.rebuild		setup and rebuild the stack'
-	@echo '  www.shell			ensure startup and load shell'
-	@echo '  www.root.shell		ensure startup and load root shell'
+	@echo '  www.shell			load user www shell'
+	@echo '  www.root.shell		load root www shell'
 	@echo ''
 	@echo 'Code server stack:'
 	@echo '  code.start			start code stack'
 	@echo '  code.stop			stop code stack'
 	@echo '  code.restart		restart code stack'
-	@echo '  code.up			load stack in current session for output'
-	@echo '  www.build			setup and build the stack'
-	@echo '  www.rebuild		setup and rebuild the stack'
-	@echo '  www.shell			ensure startup and load shell'
+	@echo '  code.up			load code stack in current tty'
+	@echo '  code.build			setup and build the stack'
+	@echo '  code.rebuild		setup and rebuild the stack'
+	@echo '  code.shell			load standard coder shell'
 
 vm.init:
 	@bash scripts/vm/init-ubuntu
@@ -32,6 +33,12 @@ install: _setup
 
 _setup:
 	@bash scripts/stack.init/setup-directories
+
+
+update: code.stop www.stop _pull www.build code.build
+
+_pull:
+	@git pull
 
 
 
