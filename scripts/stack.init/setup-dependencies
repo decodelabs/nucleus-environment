@@ -1,0 +1,89 @@
+#!/bin/bash
+
+apt-get update
+apt-get install -y --no-install-recommends gnupg
+
+# Sources
+echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main" > /etc/apt/sources.list.d/ondrej-php.list
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
+curl -sL https://deb.nodesource.com/setup_13.x | bash -
+
+apt-get update
+
+
+# Install
+apt-get -y --no-install-recommends install \
+    php-apcu \
+    php-apcu-bc \
+    php7.3-bcmath \
+    php7.3-cli \
+    php7.3-curl \
+    php7.3-gd \
+    php7.3-gmp \
+    php-imagick \
+    php7.3-intl \
+    php7.3-json \
+    php7.3-ldap \
+    php7.3-mbstring \
+    php-memcached \
+    php7.3-mysql \
+    php7.3-mbstring \
+    php7.3-opcache \
+    php-redis \
+    php-xdebug \
+    php7.3-xml \
+    php7.3-zip \
+    \
+    autoconf \
+    automake \
+    bash-completion \
+    binutils \
+    build-essential \
+    bzip2 \
+    ca-certificates \
+    coreutils \
+    curl \
+    dnsutils \
+    git \
+    git-flow \
+    imagemagick \
+    iputils-ping \
+    locales \
+    net-tools \
+    netcat \
+    nodejs \
+    openssh-client \
+    openssh-server \
+    redis-tools \
+    sassc \
+    socat \
+    sudo \
+    nano \
+    rsync \
+    unzip \
+    zip
+
+
+# Install composer
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+# Tidy up
+apt-get clean
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+
+# Setup dirs
+mkdir -p /run/sshd
+mkdir -p /var/run/mysqld/
+chown 1000:1000 /var/run/mysqld/
+
+
+# Increase notify count
+echo "fs.inotify.max_user_watches=524288" | tee -a /etc/sysctl.conf
+
+
+# Setup locales
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8
