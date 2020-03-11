@@ -6,36 +6,57 @@ NUCDIR=$(dirname $(dirname $DIR))
 # Setup directories
 if [[ ! -d $NUCDIR/config/certificates ]]; then
     mkdir -p $NUCDIR/config/certificates
-    echo "Created "$NUCDIR"/config/certificates"
+    echo "Created $NUCDIR/config/certificates"
 fi
 
 if [[ ! -d $NUCDIR/config/hosts ]]; then
     mkdir -p $NUCDIR/config/hosts
-    echo "Created "$NUCDIR"/config/hosts"
+    echo "Created $NUCDIR/config/hosts"
 fi
 
 if [[ ! -d $NUCDIR/data/databases ]]; then
     mkdir -p $NUCDIR/data/databases
-    echo "Created "$NUCDIR"/data/databases"
+    echo "Created $NUCDIR/data/databases"
+fi
+
+
+if [[ ! -d $NUCDIR/data/editors/workspaces ]]; then
+    mkdir -p $NUCDIR/data/editors/workspaces
+    echo "Created $NUCDIR/data/editors/workspaces"
 fi
 
 if [[ ! -d $NUCDIR/data/editors/code-server ]]; then
     mkdir -p $NUCDIR/data/editors/code-server
-    echo "Created "$NUCDIR"/data/editors/code-server"
+    echo "Created $NUCDIR/data/editors/code-server"
 fi
 
-if [[ ! -d $NUCDIR/data/editors/vscode-server ]]; then
-    mkdir -p $NUCDIR/data/editors/vscode-server
-    echo "Created "$NUCDIR"/data/editors/vscode-server"
+if [[ ! -f $NUCDIR/data/editors/code-server/Machine ]]; then
+    cat <<-EOF >$NUCDIR/data/editors/code-server/Machine
+{
+    "workspaceExplorer.workspaceStorageDirectory": "/srv/nucleus/data/editors/workspaces",
+    "terminal.integrated.shell.linux": "/srv/nucleus/stacks/code/services/code-server/custom/shell.user",
+    "terminal.integrated.automationShell.linux": "/bin/bash"
+}
+EOF
+    echo "Created $NUCDIR/data/editors/code-server/Machine"
 fi
 
 if [[ ! -f $NUCDIR/data/editors/user-ui.css ]]; then
     touch $NUCDIR/data/editors/user-ui.css
+    echo "Created $NUCDIR/data/editors/user-ui.css"
 fi
+
+
+if [[ ! -d $NUCDIR/data/editors/vscode-server ]]; then
+    mkdir -p $NUCDIR/data/editors/vscode-server
+    echo "Created $NUCDIR/data/editors/vscode-server"
+fi
+
+
 
 if [[ ! -d $NUCDIR/data/www ]]; then
     mkdir -p $NUCDIR/data/www
-    echo "Created "$NUCDIR"/data/www"
+    echo "Created $NUCDIR/data/www"
 fi
 
 
