@@ -17,6 +17,7 @@ services:
         ports:
             - "8080:8080"
         volumes:
+            - /etc/ssh/ssh_host_rsa_key.pub:/etc/ssh/ssh_host_rsa_key.pub:ro
             - ../../config/ssh/:/home/coder/.ssh/
             - ../../data/editors/code-server/:/home/coder/.local/share/code-server
             - ./services/code-server/custom/custom-ui.css:/usr/local/lib/code-server/src/browser/pages/custom-ui.css
