@@ -32,7 +32,7 @@ services:
             - ../../:/srv/nucleus/:rw
             - ./services/php/config/ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini:ro
             - ./services/php/config/fpm-overrides.conf:/etc/php/7.3/fpm/pool.d/zz-overrides.conf:ro
-            - /etc/ssh/ssh_host_rsa_key.pub:/etc/ssh/ssh_host_rsa_key.pub:ro
+            - /etc/ssh/:/etc/ssh/:ro
             - ../../config/ssh/:/home/${USERNAME}/.ssh/
             - ../../data/editors/vscode-server/:/home/${USERNAME}/.vscode-server/
             - ${NUCLEUS_WWW}:/srv/www/
