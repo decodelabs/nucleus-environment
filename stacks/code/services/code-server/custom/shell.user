@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh -t $USERNAME@172.16.230.20 "cd $PWD ; bash -l"

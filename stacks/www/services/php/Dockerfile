@@ -6,9 +6,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Set user & group
 ARG USERNAME=nucleus
 ARG PASSWORD=nucleus
+ARG GIT_NAME=nucleus
+ARG GIT_EMAIL=nucleus@localtest.me
 
 ENV USERNAME="$USERNAME" \
 	PASSWORD="$PASSWORD" \
+	GIT_NAME="$GIT_NAME" \
+	GIT_EMAIL="$GIT_EMAIL" \
 	MY_UID="1000" \
 	MY_GID="1000"
 
@@ -18,7 +22,10 @@ RUN set -eux \
 	&& mkdir /etc/sudoers.d/ \
 	&& echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
 	&& echo "PS1='\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;34m\]\H\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '" >> /home/${USERNAME}/.profile \
-	&& echo "cd /srv/www" >> /home/${USERNAME}/.profile \
+	&& echo "export USERNAME=$USERNAME" >> /home/${USERNAME}/.profile \
+	&& echo "export PASSWORD=$PASSWORD" >> /home/${USERNAME}/.profile \
+	&& echo "export GIT_NAME=$GIT_NAME" >> /home/${USERNAME}/.profile \
+	&& echo "export GIT_EMAIL=$GIT_EMAIL" >> /home/${USERNAME}/.profile \
 	&& chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.profile
 
 
