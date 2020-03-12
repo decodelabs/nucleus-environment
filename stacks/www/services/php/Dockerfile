@@ -69,6 +69,11 @@ RUN cd /srv/util/ \
 # Settings
 RUN echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
 
+
+# Install packages
+RUN npm install -g vsce
+
+
 # Volumes
 VOLUME /srv/util/
 
