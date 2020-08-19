@@ -35,7 +35,7 @@ _setup:
 	@bash scripts/stack.init/setup-directories
 
 
-update: code.stop www.stop _pull www.build code.build
+update: code.stop www.stop _pull www.rebuild code.rebuild
 
 _pull:
 	@git pull

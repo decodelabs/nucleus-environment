@@ -110,6 +110,33 @@ services:
             nucleus:
                 ipv4_address: 172.16.230.24
 
+    # ------------------------------------------------------------
+    # Ungit
+    # ------------------------------------------------------------
+    ungit:
+        build:
+            context: services/ungit
+            args:
+                - USERNAME
+                - PASSWORD
+        container_name: ungit
+        hostname: ungit.nucleus
+        restart: always
+        env_file:
+            - ../../.env
+        environment:
+            - GIT_NAME
+            - GIT_EMAIL
+            - USERNAME
+            - PASSWORD
+        working_dir: /srv/www/sites/
+        networks:
+            nucleus:
+                ipv4_address: 172.16.230.25
+        volumes:
+            - ../../config/ssh/:/home/${USERNAME}/.ssh/
+            - ${NUCLEUS_WWW}:/srv/www/
+
 # ------------------------------------------------------------
 # Networks
 # ------------------------------------------------------------

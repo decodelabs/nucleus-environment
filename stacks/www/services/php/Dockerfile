@@ -31,7 +31,7 @@ RUN set -eux \
 
 # Install selected extensions and other stuff
 RUN apt-get update \
-	&& curl -sL https://deb.nodesource.com/setup_13.x | bash - \
+	&& curl -sL https://deb.nodesource.com/setup_14.x | bash - \
     && apt-get -y --no-install-recommends install \
 		php7.3-bcmath php7.3-gd php7.3-gmp php-imagick php7.3-intl php7.3-ldap php-memcached php7.3-mysql php-redis php-xdebug \
 		autoconf automake bash-completion binutils build-essential coreutils dnsutils iputils-ping locales net-tools netcat socat sudo  \

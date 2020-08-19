@@ -7,10 +7,6 @@ case $STACK in
         SERVICE=php
         ;;
 
-    system)
-        SERVICE=syncthing
-        ;;
-
     code)
         SERVICE=code-server
         ;;
